@@ -21,30 +21,29 @@ type Status struct {
   Version             	string
 }
 
-var startTime time.Time                  // GLobal time variable for storing when service started
-var ST = statusDB{}                        // Map vaiable for fiagnostics
-
-type statusDB struct {                     // Diagnostics map stored in memory
+var startTime time.Time                  // this is a time variable, its used as a counter for how long the service has been operating
+var ST = statusDB{}                        // variable for diagnostics
+type statusDB struct {                     
 	status map[int]Status
 }
 
-func (db *statusDB) Init() {               // Initialised for use
+func (db *statusDB) Init() {             
 	db.status = make(map[int]Status)
-  startTime = time.Now()                 // Stores application start Time
-  var tempDiag Status                      // Temp to hold to be modified diagnostics value
-  tempDiag = db.status[0]                  // Copies object
+  startTime = time.Now()                 // starts counting time
+  var tempDiag Status                      //holds diagnostic valyes
+  tempDiag = db.status[0]                  
   tempDiag.Gitlab = http.StatusOK        // Assigns default start up values
   tempDiag.Database = http.StatusOK
   tempDiag.Version = "v1"
   db.status[0] = tempDiag                  // Places udated information into diag
 }
 
-func (db *statusDB) Get() (Status, bool){    // Get specific diagnostics
+func (db *statusDB) Get() (Status, bool){    // retrieves diagnostics
   s, ok := db.status[0]
 	return s, ok
 }
 
-func (db *statusDB) TestApi(api string){   // Assigns 503 error code if api is not working
+func (db *statusDB) TestApi(api string){   // this si a error handle if serivce is unavaliable, the 503 error basically
   var tempDiag Status
   tempDiag = db.status[0]
   if api == "Gitlab"{                   // For gitlab
@@ -56,7 +55,7 @@ func (db *statusDB) TestApi(api string){   // Assigns 503 error code if api is n
   db.status[0] = tempDiag
 }
 
-func (db *statusDB) GetAll() []Status {     // Fetchdes the diagnostics
+func (db *statusDB) GetAll() []Status {                                      // retrieves diags
   var tempDiag Status
   tempDiag = db.status[0]
   tempDiag.Uptime = time.Since(startTime) / time.Second
@@ -70,7 +69,7 @@ func (db *statusDB) GetAll() []Status {     // Fetchdes the diagnostics
 
 
 
-                                        // Returns webservice on request
+                                                                    // should return webservice
 func printDiagnostics(w http.ResponseWriter) {
   a := make([]Status, 0, 1)
   for _, s := range ST.GetAll() {

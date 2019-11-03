@@ -7,13 +7,13 @@ import (
   //"bytes"
   "strconv"
 )
-var DBp = ProjectsDB{}											// Stores projects
+var DBp = ProjectsDB{}											// variable used to store objects of a class
 
 
-func replyWithAlls(w http.ResponseWriter, DB projectStorage, limit string, auth string){
+func replyWithAlls(w http.ResponseWriter, DB projectStorage, limit string, auth string){  
 
   limitINT, err := strconv.Atoi(limit)
-	if err == nil {
+	if err == nil {                               
 	}
   for i := 1; i <= limitINT; i++ {
     if i == 0 {
@@ -21,8 +21,8 @@ func replyWithAlls(w http.ResponseWriter, DB projectStorage, limit string, auth 
     }
 
     url := "https://git.gvk.idi.ntnu.no/api/v4/projects/" + strconv.Itoa(i) + "?private_token=" + auth
-  	resp, err := http.Get(url)								// GETs url
-  	if err != nil {														// If it doesnt work, return error
+  	resp, err := http.Get(url)								// retrieves the url, says it on the code aswell
+  	if err != nil {														// error handler, returns not found error if the url isnt found
   		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
       ST.TestApi("Gitlab")
   	}
@@ -31,8 +31,8 @@ func replyWithAlls(w http.ResponseWriter, DB projectStorage, limit string, auth 
     json.NewDecoder(resp.Body).Decode(&tempProject)
 
     url = "https://git.gvk.idi.ntnu.no/api/v4/projects/" + strconv.Itoa(i) + "/repository/commits?per_page=900&private_token=" + auth
-    resp, err = http.Get(url)								// GETs url
-    if err != nil {														// If it doesnt work, return error
+    resp, err = http.Get(url)							
+    if err != nil {													//pretty much the same as above
       http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
       ST.TestApi("Gitlab")
     }
@@ -44,11 +44,11 @@ func replyWithAlls(w http.ResponseWriter, DB projectStorage, limit string, auth 
     if(tempProject.Repository != "") { DB.Add(tempProject) }
   }
 
-	a := make([]Project, 0, DB.Count())		// make map variable for printing
-	for _, s := range DB.GetAll() {				// For each project in DB
-		a = append(a, s)										// Copy them to a
+	a := make([]Project, 0, DB.Count())		// makes a varable map to be printed 
+	for _, s := range DB.GetAll() {				// for each DB
+		a = append(a, s)										// append them to 'a'
 	}
-	json.NewEncoder(w).Encode(a)					// Display as JSON on browser
+	json.NewEncoder(w).Encode(a)					// Display on browser
 }
 
 

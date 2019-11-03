@@ -27,8 +27,8 @@ func replyWithAllu(w http.ResponseWriter, DB userStorage, auth string){
 
 
   url := "https://git.gvk.idi.ntnu.no/api/v4/projects/1/members/all?private_token=" + auth
-	resp, err := http.Get(url)								// GETs url
-	if err != nil {														// If it doesnt work, return error
+	resp, err := http.Get(url)								
+	if err != nil {														// gets url, gives a not found error if its not found
   	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
     ST.TestApi("Gitlab")
 	}
@@ -38,34 +38,34 @@ func replyWithAllu(w http.ResponseWriter, DB userStorage, auth string){
 
 
   iurl := "https://git.gvk.idi.ntnu.no/api/v4/projects/1/issues?private_token=" + auth
-  resp, err = http.Get(iurl)								  // GETs url
-  if err != nil {														// If it doesnt work, return error
+  resp, err = http.Get(iurl)								  // gets url, gives a not found error if its not found
+  if err != nil {														
     http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
     ST.TestApi("Gitlab")
   }
   defer resp.Body.Close()
   json.NewDecoder(resp.Body).Decode(&issueStructure)
   for idx, x := range tempUser{     // For each occurrence
-    if idx == 0 {														// Skip header
+    if idx == 0 {														// this will Skip the header
       println("")
     }
-    println(x.Username)
+    println(x.Username)                                             //prints username, should print all usernames 
     DBu.Add(x)
   }
   for idx, y := range issueStructure{
-    if idx == 0 {														// Skip header
+    if idx == 0 {														// again, skips header
       println("")
     }
 
-    println(y.AuthName.username)
+    println(y.AuthName.username)                                        //prints authenticator name
 
   }
 
-	a := make([]User, 0, DBu.Count())		  // make map variable for printing
-	for _, s := range DB.GetAll() {				// For each country in DB
-		a = append(a, s)										// Copy them to a
+	a := make([]User, 0, DBu.Count())		  // variable map used to display
+	for _, s := range DB.GetAll() {				// loops for each object
+		a = append(a, s)										// and appends them to a list
 	}
-	json.NewEncoder(w).Encode(a)					// Display as JSON on browser
+	json.NewEncoder(w).Encode(a)					// thats displayed
 }
 
 
@@ -74,8 +74,8 @@ func replyWithAllu(w http.ResponseWriter, DB userStorage, auth string){
 func replyWithAlll(w http.ResponseWriter, DB labelsStorage, auth string){
 
   url := "https://git.gvk.idi.ntnu.no/api/v4/projects/1/labels?private_token=" + auth
-	resp, err := http.Get(url)								// GETs url
-	if err != nil {														// If it doesnt work, return error
+	resp, err := http.Get(url)								
+	if err != nil {												//these are everywhere, you know what they do		
   	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
     ST.TestApi("Gitlab")
 	}
@@ -85,8 +85,8 @@ func replyWithAlll(w http.ResponseWriter, DB labelsStorage, auth string){
 
 
   lurl := "https://git.gvk.idi.ntnu.no/api/v4/projects/1/issues?private_token=" + auth
-  resp, err = http.Get(lurl)								  // GETs url
-  if err != nil {														// If it doesnt work, return error
+  resp, err = http.Get(lurl)								 
+  if err != nil {										
     http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
     ST.TestApi("Gitlab")
   }
@@ -103,16 +103,15 @@ func replyWithAlll(w http.ResponseWriter, DB labelsStorage, auth string){
   }
 
 
-	a := make([]Label, 0, DBl.Count())		  // make map variable for printing
-	for _, s := range DBl.GetAll() {				// For each country in DB
-		a = append(a, s)										// Copy them to a
+	a := make([]Label, 0, DBl.Count())		 //identical to the code on line 64
+	for _, s := range DBl.GetAll() {	
+		a = append(a, s)								
 	}
-	json.NewEncoder(w).Encode(a)					// Display as JSON on browser
-
+	json.NewEncoder(w).Encode(a)					
 }
 
 type findProject struct{
-  Event     	string	`json:"event"`
+  Event     	string	`json:"event"`                     //struct 
 }
 
 

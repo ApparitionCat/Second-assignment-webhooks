@@ -1,4 +1,4 @@
-package secondAssignment
+package secondAssignment      //another class file, this is for username/users
 
 type userStorage interface {
 	Init()

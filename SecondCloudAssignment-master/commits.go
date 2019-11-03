@@ -1,4 +1,4 @@
-package secondAssignment
+package secondAssignment              //this file holds most of the functions that will be called, as well as some structs. Think of it as a class file.
 
 type projectStorage interface {
 	Init()

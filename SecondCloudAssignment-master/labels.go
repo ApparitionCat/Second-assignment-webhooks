@@ -1,4 +1,4 @@
-package secondAssignment
+package secondAssignment        //a nother class file, this one contains information and functions as well as structs for lables
 
 type labelsStorage interface {
 	Init()
