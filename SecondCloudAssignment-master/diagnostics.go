@@ -14,17 +14,17 @@ type statusStorage interface {
   GetAll() []Status
 }
 
+var startTime time.Time                  // this is a time variable, its used as a counter for how long the service has been operating
+var ST = statusDB{}                        // variable for diagnostics
+type statusDB struct {                     
+	status map[int]Status
+}
+
 type Status struct {
   Gitlab             		int
   Database              int
   Uptime             		time.Duration
   Version             	string
-}
-
-var startTime time.Time                  // this is a time variable, its used as a counter for how long the service has been operating
-var ST = statusDB{}                        // variable for diagnostics
-type statusDB struct {                     
-	status map[int]Status
 }
 
 func (db *statusDB) Init() {             
@@ -43,6 +43,17 @@ func (db *statusDB) Get() (Status, bool){    // retrieves diagnostics
 	return s, ok
 }
 
+func (db *statusDB) GetAll() []Status {    // retrieves diags
+  var tempDiag Status
+  tempDiag = db.status[0]
+  tempDiag.Uptime = time.Since(startTime) / time.Second
+  db.status[0] = tempDiag
+	all := make([]Status, 0, 1)
+	for _, s := range db.status {
+		all = append(all, s)
+	}
+	return all
+}                         // should return webservice
 func (db *statusDB) TestApi(api string){   // this si a error handle if serivce is unavaliable, the 503 error basically
   var tempDiag Status
   tempDiag = db.status[0]
@@ -54,22 +65,6 @@ func (db *statusDB) TestApi(api string){   // this si a error handle if serivce 
 
   db.status[0] = tempDiag
 }
-
-func (db *statusDB) GetAll() []Status {                                      // retrieves diags
-  var tempDiag Status
-  tempDiag = db.status[0]
-  tempDiag.Uptime = time.Since(startTime) / time.Second
-  db.status[0] = tempDiag
-	all := make([]Status, 0, 1)
-	for _, s := range db.status {
-		all = append(all, s)
-	}
-	return all
-}
-
-
-
-                                                                    // should return webservice
 func printDiagnostics(w http.ResponseWriter) {
   a := make([]Status, 0, 1)
   for _, s := range ST.GetAll() {

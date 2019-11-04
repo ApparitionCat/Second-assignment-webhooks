@@ -51,13 +51,6 @@ func replyWithAlls(w http.ResponseWriter, DB projectStorage, limit string, auth 
 	json.NewEncoder(w).Encode(a)					// Display on browser
 }
 
-
-
-
-
-
-
-
 func HandlerCommits(w http.ResponseWriter, r *http.Request) {
 	http.Header.Add(w.Header(), "content-type", "application/json")
 //	parts := strings.Split(r.URL.Path, "/")
@@ -69,5 +62,5 @@ func HandlerCommits(w http.ResponseWriter, r *http.Request) {
   }
 
 
-	replyWithAlls(w, &DBp, limit, commitAuth)
+	replyWithAlls(w, &DBp, limit, commitAuth)     //calls the function above
 }
