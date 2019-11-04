@@ -16,8 +16,19 @@ type WebhookArchive struct {
   Url		      string	`json:"url"`
   Timestamp   time.Time
 }
-
 var webhooks []WebhookArchive
+
+func ServiceHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodPost:
+		fmt.Println("Received POST request...")
+	//	for _, v := range webhooks {
+		//	go CallUrl(v.Url, "Response on registered event in webhook demo: " + v.Event)
+	//	}
+	default:
+		http.Error(w, "Invalid method "+r.Method, http.StatusBadRequest)
+	}
+}
 
 func WebhookHandler(w http.ResponseWriter, r *http.Request) {
   http.Header.Add(w.Header(), "content-type", "application/json")
@@ -44,17 +55,6 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ServiceHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodPost:
-		fmt.Println("Received POST request...")
-	//	for _, v := range webhooks {
-		//	go CallUrl(v.Url, "Response on registered event in webhook demo: " + v.Event)
-	//	}
-	default:
-		http.Error(w, "Invalid method "+r.Method, http.StatusBadRequest)
-	}
-}
 
 /*
  	Calls given URL with given content and awaits response (status and body).
